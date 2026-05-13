@@ -1,5 +1,5 @@
 ## Things required
-- Anthropic Key
+- Ollama on your machine with LLMs `gpt-oss:20b` and `mxbai-embed-large`
 
 ### Commands
 
@@ -14,4 +14,5 @@
 - `pip install -U <your_package>`
 
 ### Test questions
-- southeast asia population and save results in the file
+- how are the vegan options
+- how is the ambience
