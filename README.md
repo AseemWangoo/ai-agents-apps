@@ -27,3 +27,7 @@
    - Graph here
 
    ![LangGraph: classifier → router → therapist | logical → end](multi-node-chatbot-langgraph/graph.png)
+
+6. Weather tool LangChain:
+   - **LangChain** `create_agent` with one tool: **`get_weather`** (wttr.in `j1` JSON), **OpenAI** `gpt-4.1-mini`, humorous system prompt.
+   - `main.py`: `invoke` for a single reply; optional **`stream_mode="messages"`** for token streaming.
