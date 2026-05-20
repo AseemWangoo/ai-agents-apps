@@ -36,3 +36,7 @@
    - **LangChain** `create_agent` with **`get_weather`** (wttr.in `j1` JSON) and **`locate_user`** (resolves city from **`ToolRuntime`** + **`Context`** `user_id`: ABC → Noida, etc.).
    - **Structured output** via a **`ResponseFormat`** dataclass (summary, temps, humidity); **`init_chat_model`** / `gpt-4.1-mini`, humorous system prompt.
    - **Thread memory**: **`InMemorySaver`** checkpointer + `configurable.thread_id` so a second `invoke` (“Is this usual?”) reuses prior turns on the same thread; changing `thread_id` drops that memory.
+
+8. Image LangChain:
+   - **Vision** over a remote image URL: **`init_chat_model`** (`gpt-4.1-mini`) + **`HumanMessage`** whose `content` is a list of **`text`** + **`image`** (`url`) blocks, then **`model.invoke([message])`** and print **`response.content`**.
+   - `main.py` in `image_langchain/`; commented block shows the equivalent dict-style message shape.
