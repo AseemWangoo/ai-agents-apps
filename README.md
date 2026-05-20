@@ -40,3 +40,8 @@
 8. Image LangChain:
    - **Vision** over a remote image URL: **`init_chat_model`** (`gpt-4.1-mini`) + **`HumanMessage`** whose `content` is a list of **`text`** + **`image`** (`url`) blocks, then **`model.invoke([message])`** and print **`response.content`**.
    - `main.py` in `image_langchain/`; commented block shows the equivalent dict-style message shape.
+
+9. FAISS LangChain:
+   - In-memory semantic retrieval demo using **FAISS** + **OpenAIEmbeddings** (`text-embedding-3-large`) over a tiny hardcoded text corpus (Apple/MacBooks/oranges/Thinkpads/pears).
+   - Builds a retriever (`k=3`), wraps it as a tool via **`create_retriever_tool`** (`kb_search`), and plugs it into a **LangChain** `create_agent` (`gpt-4.1-mini`).
+   - System prompt instructs the model to call `kb_search` first for relevant questions, then answer concisely (can call multiple times).
