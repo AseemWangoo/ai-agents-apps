@@ -31,3 +31,8 @@
 6. Weather tool LangChain:
    - **LangChain** `create_agent` with one tool: **`get_weather`** (wttr.in `j1` JSON), **OpenAI** `gpt-4.1-mini`, humorous system prompt.
    - `main.py`: `invoke` for a single reply; optional **`stream_mode="messages"`** for token streaming.
+
+7. Memory tools LangChain:
+   - **LangChain** `create_agent` with **`get_weather`** (wttr.in `j1` JSON) and **`locate_user`** (resolves city from **`ToolRuntime`** + **`Context`** `user_id`: ABC → Noida, etc.).
+   - **Structured output** via a **`ResponseFormat`** dataclass (summary, temps, humidity); **`init_chat_model`** / `gpt-4.1-mini`, humorous system prompt.
+   - **Thread memory**: **`InMemorySaver`** checkpointer + `configurable.thread_id` so a second `invoke` (“Is this usual?”) reuses prior turns on the same thread; changing `thread_id` drops that memory.
