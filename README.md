@@ -45,3 +45,21 @@
    - In-memory semantic retrieval demo using **FAISS** + **OpenAIEmbeddings** (`text-embedding-3-large`) over a tiny hardcoded text corpus (Apple/MacBooks/oranges/Thinkpads/pears).
    - Builds a retriever (`k=3`), wraps it as a tool via **`create_retriever_tool`** (`kb_search`), and plugs it into a **LangChain** `create_agent` (`gpt-4.1-mini`).
    - System prompt instructs the model to call `kb_search` first for relevant questions, then answer concisely (can call multiple times).
+
+## Guardrails (`guardrails/`)
+
+LangChain **built-in guardrails** demos (uv-managed, Python 3.14). Each app needs `OPENAI_API_KEY` in `.env`. Run from the project folder with `uv run main.py`.
+
+10. PII detection LangChain:
+
+- **LangChain** `create_agent` with **`PIIMiddleware`** on user input before the model sees it.
+- Strategies: **redact** emails, **mask** credit cards, **block** API keys (custom `sk-...` detector).
+
+- Ref: [LangChain guardrails](https://docs.langchain.com/oss/python/langchain/guardrails#built-in-guardrails)
+
+11. Human-in-the-loop LangChain:
+
+- **LangChain** `create_agent` with **`HumanInTheLoopMiddleware`**: sensitive tools (`send_email`, `delete_records`) require approval; safe tools (`search_web`) run automatically.
+- **`InMemorySaver`** checkpointer + `thread_id` so the agent pauses until a human resumes with **`Command(resume=...)`** (`approve` or `reject` with reason).
+
+- Ref: [LangChain guardrails](https://docs.langchain.com/oss/python/langchain/guardrails#built-in-guardrails)
