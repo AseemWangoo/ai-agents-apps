@@ -63,3 +63,9 @@ LangChain **built-in guardrails** demos (uv-managed, Python 3.14). Each app need
 - **`InMemorySaver`** checkpointer + `thread_id` so the agent pauses until a human resumes with **`Command(resume=...)`** (`approve` or `reject` with reason).
 
 - Ref: [LangChain guardrails](https://docs.langchain.com/oss/python/langchain/guardrails#built-in-guardrails)
+
+12. Custom guardrails LangChain (`guardrails/custom-guardrails/`):
+
+- Custom **`AgentMiddleware`** subclasses plugged into **`create_agent`** via the `middleware` list.
+- **`ContentFilterMiddleware`** (`before_agent`): deterministic keyword guardrail — scans the first user message for banned terms (`hack`, `exploit`, `malware`) and **`jump_to: "end"`** before the agent runs.
+- **`SafetyGuardrailMiddleware`** (`after_agent`, commented in `main.py`): model-based guardrail — **`gpt-5.4-mini`** labels the final AI reply `SAFE` or `UNSAFE` and replaces unsafe output with a refusal message.
