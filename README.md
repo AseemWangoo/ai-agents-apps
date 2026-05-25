@@ -25,7 +25,7 @@ Exceptions: [stock_briefing_crewai](crewAI/stock_briefing_crewai/) uses `crewai 
 | 11  | Human-in-the-loop   | [guardrails/human-in-loop-langchain/](guardrails/human-in-loop-langchain/)                   | Approve sensitive tools before they run                |
 | 12  | Custom guardrails   | [guardrails/custom-guardrails/](guardrails/custom-guardrails/)                               | Keyword filter + optional safety check                 |
 | 13  | Intro to LangSmith  | [langsmith/langsmith-pynb/](langsmith/langsmith-pynb/)                                       | Academy course notebooks (tracing, evals, prompts)     |
-| 14  | LangSmith datasets  | [langsmith-datasets/](langsmith-datasets/)                                                   | Upload LangSmith FAQ examples to a dataset via the SDK |
+| 14  | LangSmith datasets  | [langsmith/langsmith-datasets/](langsmith/langsmith-datasets/)                               | Upload LangSmith FAQ examples to a dataset via the SDK |
 
 ## Repository layout
 
@@ -34,8 +34,9 @@ Exceptions: [stock_briefing_crewai](crewAI/stock_briefing_crewai/) uses `crewai 
 - [RAG/](RAG/) — end-to-end retrieval apps
 - [crewAI/](crewAI/) — multi-agent crews
 - [guardrails/](guardrails/) — safety and approval middleware
-- [langsmith/langsmith-pynb/](langsmith/langsmith-pynb/) — LangSmith course notebooks
-- [langsmith-datasets/](langsmith-datasets/) — Create dataset examples from the LangSmith SDK
+- [langsmith/](langsmith/) — LangSmith course notebooks and SDK dataset uploads
+  - [langsmith-pynb/](langsmith/langsmith-pynb/) — Introduction to LangSmith notebooks
+  - [langsmith-datasets/](langsmith/langsmith-datasets/) — Bulk-upload examples via the SDK
 
 ---
 
@@ -121,6 +122,6 @@ Full setup: [langsmith/langsmith-pynb/README.md](langsmith/langsmith-pynb/README
 
 ### LangSmith datasets (SDK)
 
-[langsmith-datasets/](langsmith-datasets/) — Script that bulk-uploads question/answer pairs into an existing LangSmith dataset using `Client.create_examples()`. The examples are LangSmith FAQ-style prompts (tracing, `@traceable`, evals, feedback, agents, and similar topics).
+[langsmith/langsmith-datasets/](langsmith/langsmith-datasets/) — Script that bulk-uploads question/answer pairs into an existing LangSmith dataset using `Client.create_examples()`. The examples are LangSmith FAQ-style prompts (tracing, `@traceable`, evals, feedback, agents, and similar topics).
 
-![LangSmith dataset examples in the UI](langsmith-datasets/Dataset.png)
+![LangSmith dataset examples in the UI](langsmith/langsmith-datasets/Dataset.png)
