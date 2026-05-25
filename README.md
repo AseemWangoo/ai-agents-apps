@@ -1,96 +1,118 @@
 # AI Agents Apps
 
-Collection of small AI agent demos, grouped by framework and topic.
+Small, self-contained demos for LangGraph, LangChain, RAG, CrewAI, guardrails, and LangSmith. Each folder is its own mini-app.
 
-```
-ai-agents-apps/
-├── langgraph/          # LangGraph workflows
-├── langchain/          # LangChain agents, retrieval, multimodal
-│   ├── agents/
-│   ├── retrieval/
-│   └── multimodal/
-├── RAG/                # End-to-end RAG apps
-├── crewAI/             # CrewAI multi-agent crews
-└── guardrails/         # LangChain guardrails & middleware
-└── langsmith/          # LangSmith Academy course (notebooks)
-    └── langsmith-pynb/
-```
+## Quick start
 
-## LangGraph (`langgraph/`)
+Most Python projects use [uv](https://docs.astral.sh/uv/). Open a project folder, add API keys to `.env`, run `uv sync`, then `uv run main.py`.
 
-1. Basic chatbot LangGraph (`langgraph/basic-chatbot-langgraph/`):
-   - Minimal **LangGraph** chatbot: a `StateGraph` with `messages` + `add_messages`, one **`chatbot`** node (`START` → `chatbot` → `END`) that calls **`init_chat_model`** (`claude-haiku-4-5-20251001`) via `llm.invoke`. `main.py`.
+Exceptions: [stock_briefing_crewai](crewAI/stock_briefing_crewai/) uses `crewai run`; [langsmith-pynb](langsmith/langsmith-pynb/) uses Jupyter (see LangSmith below).
 
-   ![LangGraph: __start__ → chatbot → __end__](langgraph/basic-chatbot-langgraph/graph.png)
+## Project index
 
-2. Multi-node chatbot LangGraph (`langgraph/multi-node-chatbot-langgraph/`):
-   - **LangGraph** workflow: **`classifier`** node (`with_structured_output` → `emotional` | `logical`), **`router`** node, then **`add_conditional_edges`** to **`therapist`** or **`logical`** assistant nodes and **`END`**. Shared state: **`messages`** (`add_messages`) and **`message_type`**.
+| # | Project | Path | Summary |
+|---|---------|------|---------|
+| 1 | Basic chatbot | [langgraph/basic-chatbot-langgraph/](langgraph/basic-chatbot-langgraph/) | Minimal LangGraph: one chatbot node |
+| 2 | Multi-node chatbot | [langgraph/multi-node-chatbot-langgraph/](langgraph/multi-node-chatbot-langgraph/) | Classifier routes to therapist vs logical agent |
+| 3 | Researcher agent | [langchain/agents/researcher-agent-langchain/](langchain/agents/researcher-agent-langchain/) | Web + Wikipedia research with structured output |
+| 4 | Weather tool | [langchain/agents/weather-tool-langchain/](langchain/agents/weather-tool-langchain/) | Single-tool agent (wttr.in) |
+| 5 | Memory + tools | [langchain/agents/memory_tools_langchain/](langchain/agents/memory_tools_langchain/) | Tools + thread memory via checkpointer |
+| 6 | FAISS retrieval | [langchain/retrieval/faiss-langchain/](langchain/retrieval/faiss-langchain/) | Retriever tool + agent over tiny corpus |
+| 7 | Image (vision) | [langchain/multimodal/image_langchain/](langchain/multimodal/image_langchain/) | Image URL + text in one message |
+| 8 | Local RAG | [RAG/local-ai-agent-RAG/](RAG/local-ai-agent-RAG/) | Chroma + Ollama over restaurant reviews |
+| 9 | Stock briefing crew | [crewAI/stock_briefing_crewai/](crewAI/stock_briefing_crewai/) | Multi-agent daily stock brief |
+| 10 | PII guardrails | [guardrails/pii-detection-langchain/](guardrails/pii-detection-langchain/) | Redact / mask / block PII on input |
+| 11 | Human-in-the-loop | [guardrails/human-in-loop-langchain/](guardrails/human-in-loop-langchain/) | Approve sensitive tools before they run |
+| 12 | Custom guardrails | [guardrails/custom-guardrails/](guardrails/custom-guardrails/) | Keyword filter + optional safety check |
+| 13 | Intro to LangSmith | [langsmith/langsmith-pynb/](langsmith/langsmith-pynb/) | Academy course notebooks (tracing, evals, prompts) |
 
-   ![LangGraph: classifier → router → therapist | logical → end](langgraph/multi-node-chatbot-langgraph/graph.png)
+## Repository layout
 
-## LangChain agents (`langchain/agents/`)
+- [langgraph/](langgraph/) — graph-based chat workflows
+- [langchain/](langchain/) — agents, retrieval, multimodal
+- [RAG/](RAG/) — end-to-end retrieval apps
+- [crewAI/](crewAI/) — multi-agent crews
+- [guardrails/](guardrails/) — safety and approval middleware
+- [langsmith/langsmith-pynb/](langsmith/langsmith-pynb/) — LangSmith course notebooks
 
-3. Researcher-agent-langchain (`langchain/agents/researcher-agent-langchain/`):
-   - CLI research assistant built with **LangChain** and **Claude** (`ChatAnthropic`).
-   - You enter a topic; a **tool-calling agent** (LangChain classic `AgentExecutor`) can search the web (DuckDuckGo), pull context from Wikipedia, and append results to a local text file.
-   - The model is steered to return structured output matching a **Pydantic** schema (topic, summary, sources, tools used).
+---
 
-4. Weather tool LangChain (`langchain/agents/weather-tool-langchain/`):
-   - **LangChain** `create_agent` with one tool: **`get_weather`** (wttr.in `j1` JSON), **OpenAI** `gpt-4.1-mini`, humorous system prompt.
-   - `main.py`: `invoke` for a single reply; optional **`stream_mode="messages"`** for token streaming.
+## LangGraph
 
-5. Memory tools LangChain (`langchain/agents/memory_tools_langchain/`):
-   - **LangChain** `create_agent` with **`get_weather`** (wttr.in `j1` JSON) and **`locate_user`** (resolves city from **`ToolRuntime`** + **`Context`** `user_id`: ABC → Noida, etc.).
-   - **Structured output** via a **`ResponseFormat`** dataclass (summary, temps, humidity); **`init_chat_model`** / `gpt-4.1-mini`, humorous system prompt.
-   - **Thread memory**: **`InMemorySaver`** checkpointer + `configurable.thread_id` so a second `invoke` (“Is this usual?”) reuses prior turns on the same thread; changing `thread_id` drops that memory.
+### 1. Basic chatbot
 
-## LangChain retrieval (`langchain/retrieval/`)
+[langgraph/basic-chatbot-langgraph/](langgraph/basic-chatbot-langgraph/) — Single-node graph: messages in → model → reply out.
 
-6. FAISS LangChain (`langchain/retrieval/faiss-langchain/`):
-   - In-memory semantic retrieval demo using **FAISS** + **OpenAIEmbeddings** (`text-embedding-3-large`) over a tiny hardcoded text corpus (Apple/MacBooks/oranges/Thinkpads/pears).
-   - Builds a retriever (`k=3`), wraps it as a tool via **`create_retriever_tool`** (`kb_search`), and plugs it into a **LangChain** `create_agent` (`gpt-4.1-mini`).
-   - System prompt instructs the model to call `kb_search` first for relevant questions, then answer concisely (can call multiple times).
+![LangGraph: __start__ → chatbot → __end__](langgraph/basic-chatbot-langgraph/graph.png)
 
-## LangChain multimodal (`langchain/multimodal/`)
+### 2. Multi-node chatbot
 
-7. Image LangChain (`langchain/multimodal/image_langchain/`):
-   - **Vision** over a remote image URL: **`init_chat_model`** (`gpt-4.1-mini`) + **`HumanMessage`** whose `content` is a list of **`text`** + **`image`** (`url`) blocks, then **`model.invoke([message])`** and print **`response.content`**.
-   - `main.py`; commented block shows the equivalent dict-style message shape.
+[langgraph/multi-node-chatbot-langgraph/](langgraph/multi-node-chatbot-langgraph/) — Classifier picks emotional vs logical path; two different assistant nodes.
 
-## RAG (`RAG/`)
+![LangGraph: classifier → router → therapist | logical → end](langgraph/multi-node-chatbot-langgraph/graph.png)
 
-8. Local AI Agent RAG (`RAG/local-ai-agent-RAG/`):
-   - Local **RAG** over restaurant reviews: **Chroma** + **Ollama** embeddings (`mxbai-embed-large`), generation with **Ollama** (`gpt-oss:20b`).
-   - `vector.py` builds/refreshes a persisted Chroma DB from `realistic_restaurant_reviews.csv`; `main.py` loops on stdin, retrieves top chunks for each question, and runs a LangChain `ChatPromptTemplate | OllamaLLM` chain.
+---
 
-## CrewAI (`crewAI/`)
+## LangChain
 
-9. Stock briefing crewai (`crewAI/stock_briefing_crewai/`):
-   - Multi-agent **CrewAI** crew (sequential) that builds a **daily stock brief** for a ticker: a **collector** pulls price and headlines (via **yfinance** and custom tools), then **summarizer**, **risk_checker**, and **brief_writer** agents refine the output through tasks defined in YAML.
-   - Managed with **uv**; run from that directory with `crewai run` after `crewai install` and setting `OPENAI_API_KEY` in `.env`.
-   - Default kickoff input is `ticker` (e.g. `AAPL` in `main.py`).
+### Agents
 
-## Guardrails (`guardrails/`)
+[langchain/agents/](langchain/agents/)
 
-LangChain **guardrails** demos — built-in middleware and custom `AgentMiddleware` (uv-managed, Python 3.14). Each app needs `OPENAI_API_KEY` in `.env`. Run from the project folder with `uv run main.py`.
+| Project | What it shows |
+|---------|----------------|
+| [researcher-agent-langchain](langchain/agents/researcher-agent-langchain/) | Tool-calling agent, DuckDuckGo + Wikipedia, Pydantic output |
+| [weather-tool-langchain](langchain/agents/weather-tool-langchain/) | Agent with one weather tool; optional streaming |
+| [memory_tools_langchain](langchain/agents/memory_tools_langchain/) | Multiple tools, structured output, conversation memory per thread |
 
-10. PII detection LangChain (`guardrails/pii-detection-langchain/`):
-    - **LangChain** `create_agent` with **`PIIMiddleware`** on user input before the model sees it.
-    - Strategies: **redact** emails, **mask** credit cards, **block** API keys (custom `sk-...` detector).
-    - Ref: [LangChain guardrails](https://docs.langchain.com/oss/python/langchain/guardrails#built-in-guardrails)
+### Retrieval
 
-11. Human-in-the-loop LangChain (`guardrails/human-in-loop-langchain/`):
-    - **LangChain** `create_agent` with **`HumanInTheLoopMiddleware`**: sensitive tools (`send_email`, `delete_records`) require approval; safe tools (`search_web`) run automatically.
-    - **`InMemorySaver`** checkpointer + `thread_id` so the agent pauses until a human resumes with **`Command(resume=...)`** (`approve` or `reject` with reason).
-    - Ref: [LangChain guardrails](https://docs.langchain.com/oss/python/langchain/guardrails#built-in-guardrails)
+[langchain/retrieval/faiss-langchain/](langchain/retrieval/faiss-langchain/) — FAISS + embeddings, retriever tool, agent answers from a small in-memory KB.
 
-12. Custom guardrails LangChain (`guardrails/custom-guardrails/`):
-    - Custom **`AgentMiddleware`** subclasses plugged into **`create_agent`** via the `middleware` list.
-    - **`ContentFilterMiddleware`** (`before_agent`): deterministic keyword guardrail — scans the first user message for banned terms (`hack`, `exploit`, `malware`) and **`jump_to: "end"`** before the agent runs.
-    - **`SafetyGuardrailMiddleware`** (`after_agent`, commented in `main.py`): model-based guardrail — **`gpt-5.4-mini`** labels the final AI reply `SAFE` or `UNSAFE` and replaces unsafe output with a refusal message.
-    - Ref: [LangChain guardrails](https://docs.langchain.com/oss/python/langchain/guardrails#built-in-guardrails)
+### Multimodal
 
-## LangSmith (`langsmith/`)
+[langchain/multimodal/image_langchain/](langchain/multimodal/image_langchain/) — Send text + image URL to a vision-capable model.
 
-13. Introduction to LangSmith (`langsmith/langsmith-pynb/`):
-    - Jupyter notebooks across five modules: tracing & observability (module 0–1), datasets/evaluators/experiments (module 2), prompt engineering & Prompt Hub (module 3), human feedback (module 4), production monitoring & online evaluation (module 5).
+---
+
+## RAG
+
+[RAG/local-ai-agent-RAG/](RAG/local-ai-agent-RAG/) — Ingest CSV reviews into Chroma (Ollama embeddings), ask questions in a REPL-style loop. Uses vector.py to build the DB and main.py for queries.
+
+---
+
+## CrewAI
+
+[crewAI/stock_briefing_crewai/](crewAI/stock_briefing_crewai/) — Sequential crew: collect market data → summarize → risk check → write brief. Install with crewai, set OPENAI_API_KEY in .env, then crewai run. Default ticker example: AAPL.
+
+---
+
+## Guardrails
+
+[guardrails/](guardrails/) — LangChain middleware demos (uv, Python 3.14). Set OPENAI_API_KEY in .env and run main.py from each project folder.
+
+| Project | Idea |
+|---------|------|
+| [pii-detection-langchain](guardrails/pii-detection-langchain/) | Built-in PII middleware (redact, mask, block) |
+| [human-in-loop-langchain](guardrails/human-in-loop-langchain/) | Pause for approval on sensitive tools |
+| [custom-guardrails](guardrails/custom-guardrails/) | Custom middleware (keyword block, optional safety model) |
+
+Docs: [LangChain guardrails](https://docs.langchain.com/oss/python/langchain/guardrails#built-in-guardrails)
+
+---
+
+## LangSmith
+
+[langsmith/langsmith-pynb/](langsmith/langsmith-pynb/) — Notebooks for [Introduction to LangSmith](https://academy.langchain.com/courses/intro-to-langsmith) (upstream: [intro-to-langsmith](https://github.com/langchain-ai/intro-to-langsmith)).
+
+| Module | Topics |
+|--------|--------|
+| 0–1 | Tracing, run types, threads |
+| 2 | Datasets, evaluators, experiments |
+| 3 | Prompt engineering, Prompt Hub |
+| 4 | Human feedback |
+| 5 | Monitoring, online evaluation |
+
+Python 3.12–3.13. Copy example.env to .env, add LANGSMITH_API_KEY and OPENAI_API_KEY, then uv sync and env_utils.py to verify. Launch notebooks with Jupyter Lab.
+
+Full setup: [langsmith/langsmith-pynb/README.md](langsmith/langsmith-pynb/README.md)
