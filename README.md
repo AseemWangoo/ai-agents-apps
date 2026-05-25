@@ -12,6 +12,8 @@ ai-agents-apps/
 ├── RAG/                # End-to-end RAG apps
 ├── crewAI/             # CrewAI multi-agent crews
 └── guardrails/         # LangChain guardrails & middleware
+└── langsmith/          # LangSmith Academy course (notebooks)
+    └── langsmith-pynb/
 ```
 
 ## LangGraph (`langgraph/`)
@@ -87,3 +89,8 @@ LangChain **guardrails** demos — built-in middleware and custom `AgentMiddlewa
     - **`ContentFilterMiddleware`** (`before_agent`): deterministic keyword guardrail — scans the first user message for banned terms (`hack`, `exploit`, `malware`) and **`jump_to: "end"`** before the agent runs.
     - **`SafetyGuardrailMiddleware`** (`after_agent`, commented in `main.py`): model-based guardrail — **`gpt-5.4-mini`** labels the final AI reply `SAFE` or `UNSAFE` and replaces unsafe output with a refusal message.
     - Ref: [LangChain guardrails](https://docs.langchain.com/oss/python/langchain/guardrails#built-in-guardrails)
+
+## LangSmith (`langsmith/`)
+
+13. Introduction to LangSmith (`langsmith/langsmith-pynb/`):
+    - Jupyter notebooks across five modules: tracing & observability (module 0–1), datasets/evaluators/experiments (module 2), prompt engineering & Prompt Hub (module 3), human feedback (module 4), production monitoring & online evaluation (module 5).
